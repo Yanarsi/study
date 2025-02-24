@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Инженерный калькулятор</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f2f2f2;
+      }
+
+      .calculator {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 350px; /* Увеличена ширина калькулятора */
+      }
+
+      #display {
+        width: 100%;
+        height: 40px;
+        font-size: 24px;
+        text-align: right;
+        margin-bottom: 10px;
+      }
+
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      button {
+        padding: 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #conversionInput {
+        width: 100%; /* Увеличена ширина поля ввода */
+        padding: 10px; /* Увеличены отступы для удобства */
+        font-size: 16px; /* Увеличен размер шрифта */
+        margin-bottom: 5px; /* Добавлен отступ снизу */
+      }
+
+      .conversion {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      #convertedResult {
+        margin-top: 10px;
+        font-size: 16px;
+        color: #333;
+      }
+
+      #history {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <input type="text" id="display" disabled />
+      <div class="buttons">
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="appendToDisplay('1')">1</button>
+        <button onclick="appendToDisplay('2')">2</button>
+        <button onclick="appendToDisplay('3')">3</button>
+        <button onclick="appendToDisplay('+')">+</button>
+        <button onclick="appendToDisplay('4')">4</button>
+        <button onclick="appendToDisplay('5')">5</button>
+        <button onclick="appendToDisplay('6')">6</button>
+        <button onclick="appendToDisplay('-')">-</button>
+        <button onclick="appendToDisplay('7')">7</button>
+        <button onclick="appendToDisplay('8')">8</button>
+        <button onclick="appendToDisplay('9')">9</button>
+        <button onclick="appendToDisplay('*')">*</button>
+        <button onclick="appendToDisplay('0')">0</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="appendToDisplay('/')">/</button>
+        <button onclick="appendToDisplay('**')">^</button>
+        <button onclick="appendToDisplay('Math.sqrt(')">√</button>
+        <button onclick="appendToDisplay('Math.sin(')">sin</button>
+        <button onclick="appendToDisplay('Math.cos(')">cos</button>
+      </div>
+      <div class="conversion">
+        <input type="text" id="conversionInput" placeholder="Введите число" />
+        <select id="baseSelect">
+          <option value="2">Двоичная</option>
+          <option value="8">Восьмеричная</option>
+          <option value="10" selected>Десятичная</option>
+          <option value="16">Шестнадцатеричная</option>
+        </select>
+        <button onclick="convertNumber()">Перевести</button>
+      </div>
+      <div id="convertedResult"></div>
+      <div id="history"></div>
+    </div>
+    <script>
+      let history = [];
+
+      function appendToDisplay(value) {
+        document.getElementById("display").value += value;
+      }
+
+      function clearDisplay() {
+        document.getElementById("display").value = "";
+      }
+
+      function calculate() {
+        const display = document.getElementById("display");
+        try {
+          const result = eval(display.value);
+          history.push(`${display.value} = ${result}`);
+          display.value = result;
+          updateHistory();
+        } catch (error) {
+          display.value = "Ошибка";
+        }
+      }
+
+      function updateHistory() {
+        const historyDiv = document.getElementById("history");
+        historyDiv.innerHTML = history
+          .map((item) => `<div>${item}</div>`)
+          .join("");
+      }
+
+      function convertNumber() {
+        const input = document.getElementById("conversionInput").value;
+        const base = parseInt(document.getElementById("baseSelect").value);
+        let result;
+
+        if (base === 2) {
+          result = parseInt(input, 10).toString(2);
+        } else if (base === 8) {
+          result = parseInt(input, 10).toString(8);
+        } else if (base === 10) {
+          result = parseInt(input, 10);
+        } else if (base === 16) {
+          result = parseInt(input, 10).toString(16).toUpperCase();
+        }
+
+        document.getElementById(
+          "convertedResult"
+        ).innerText = `Результат: ${result}`;
+      }
+    </script>
+  </body>
+</html>
